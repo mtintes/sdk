@@ -68,6 +68,13 @@ type BashConfig struct {
 	DisplayStderr bool
 	// OutputProcessConfig defines how to process the output before comparison.
 	OutputProcessConfig OutputProcessConfig
+	// Envs specifies the environment variables to set for execution.
+	Envs [][2]string
+	// PostProcessFunctions defines a list of functions to be executed after the bash
+	// script has been run. This can be used to make use of the output of the bash script
+	// and perform additional operations on it. The functions are executed in the order
+	// they are defined and are not used for comparison.
+	PostProcessFunctions []func(goldenFile string) error
 	// WorkingDir is the directory where the bash script(s) will be
 	// executed.
 	WorkingDir string

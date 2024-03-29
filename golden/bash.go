@@ -64,6 +64,7 @@ func BashTestFile(
 	script string,
 	bashConfig BashConfig,
 ) {
+	goldenFilePath := script + goldenExtension
 	// Function run by the test.
 	f := func(t *testing.T) {
 		// Make script path absolute to avoid issues with custom working
@@ -76,6 +77,12 @@ func BashTestFile(
 
 		// Execute a bash command which consists of executing a .sh file.
 		cmd := exec.Command("bash", script)
+
+		// Pass environment and add custom environment variables
+		cmd.Env = os.Environ()
+		for _, e := range bashConfig.Envs {
+			cmd.Env = append(cmd.Env, fmt.Sprintf("%s=%s", e[0], e[1]))
+		}
 
 		// Set custom working directory if provided.
 		if bashConfig.WorkingDir != "" {
@@ -98,18 +105,17 @@ func BashTestFile(
 			got = regexReplaceCustom(got, r.Replacement, r.Regex)
 		}
 		// Write the output bytes to a .golden file, if the test is being
-		// updated.
-		goldenFile := script + goldenExtension
+		// updated
 		if *update || bashConfig.OutputProcessConfig.AlwaysUpdate {
-			if err := os.WriteFile(goldenFile, []byte(got), 0o644); err != nil {
+			if err := os.WriteFile(goldenFilePath, []byte(got), 0o644); err != nil {
 				t.Fatal("error writing bash output to file: ", err)
 			}
 		}
 
 		// Read the .golden file.
-		outGolden, err := os.ReadFile(goldenFile)
+		outGolden, err := os.ReadFile(goldenFilePath)
 		if err != nil {
-			t.Fatal("error reading file: ", goldenFile, ": ", err)
+			t.Fatal("error reading file: ", goldenFilePath, ": ", err)
 		}
 
 		// Perform the golden file comparison.
@@ -128,6 +134,14 @@ func BashTestFile(
 
 	// Test is executed.
 	t.Run(script, f)
+
+	// Run post-process functions.
+	for _, f := range bashConfig.PostProcessFunctions {
+		err := f(goldenFilePath)
+		if err != nil {
+			t.Fatalf("error running post-process function: %v", err)
+		}
+	}
 }
 
 func postProcessVolatileData(
