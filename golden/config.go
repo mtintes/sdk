@@ -78,6 +78,9 @@ type BashConfig struct {
 	// WorkingDir is the directory where the bash script(s) will be
 	// executed.
 	WorkingDir string
+	// WaitBefore adds a delay before running the bash script to handle rate limits.
+	// The delay is in seconds, if the value is set to 0 no delay will be added.
+	WaitBefore int
 }
 
 // TransientField represents a field that is transient, this is, dynamic in
