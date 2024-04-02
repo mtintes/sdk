@@ -47,7 +47,7 @@ func DagTest(t *testing.T, cases []DagTestCase) {
 
 	for len(open) > 0 {
 		// Pick the first case from the open list that has all its needs met.
-		var next DagTestCase
+		next := make([]DagTestCase, 0)
 		for _, c := range open {
 			ready := true
 			for _, need := range c.Needs {
@@ -57,36 +57,42 @@ func DagTest(t *testing.T, cases []DagTestCase) {
 				}
 			}
 			if ready {
-				next = c
+				next = append(next, c)
 				break
 			}
 		}
 
 		// If we didn't find a case to run, we have a cycle.
-		if next.Name == "" {
+		if len(next) == 0 {
 			t.Fatal("cycle detected")
 		}
 
-		// Run the case and mark it as done.
-		config := BashConfig{}
-		if next.Config != nil {
-			config = *next.Config
-		}
+		// Run the test cases in a goroutine.
 		var wg sync.WaitGroup
-		wg.Add(1)
-		go t.Run(next.Name, func(t *testing.T) {
-			defer wg.Done()
-			// Run the test case.
-			BashTestFile(t, next.Path, config)
-		})
-		wg.Wait()
-		done[next.Name] = true
+		for _, nextCase := range next {
+			config := BashConfig{}
+			if nextCase.Config != nil {
+				config = *nextCase.Config
+			}
+			wg.Add(1)
+			go t.Run(nextCase.Name, func(t *testing.T) {
+				defer wg.Done()
+				// Run the test case.
+				BashTestFile(t, nextCase.Path, config)
+			})
+		}
 
-		// Remove the case from the open list.
-		for i, c := range open {
-			if c.Name == next.Name {
-				open = append(open[:i], open[i+1:]...)
-				break
+		wg.Wait()
+
+		// Mark the case as done.
+		for _, nextCase := range next {
+			done[nextCase.Name] = true
+			// Remove the case from the open list.
+			for i, c := range open {
+				if c.Name == nextCase.Name {
+					open = append(open[:i], open[i+1:]...)
+					break
+				}
 			}
 		}
 	}
