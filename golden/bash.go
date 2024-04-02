@@ -136,7 +136,7 @@ func BashTestFile(
 	// Delay the execution of the test to adhere for rate limits.
 	if bashConfig.WaitBefore > 0 {
 		t.Logf("delaying test execution for %v", bashConfig.WaitBefore)
-		<-time.After(time.Duration(bashConfig.WaitBefore) * time.Second)
+		<-time.After(bashConfig.WaitBefore)
 	}
 
 	// Test is executed.

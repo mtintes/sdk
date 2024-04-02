@@ -79,8 +79,7 @@ type BashConfig struct {
 	// executed.
 	WorkingDir string
 	// WaitBefore adds a delay before running the bash script to handle rate limits.
-	// The delay is in seconds, if the value is set to 0 no delay will be added.
-	WaitBefore int
+	WaitBefore time.Duration
 }
 
 // TransientField represents a field that is transient, this is, dynamic in
