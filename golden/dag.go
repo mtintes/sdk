@@ -2,6 +2,7 @@ package golden
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 )
 
@@ -67,16 +68,21 @@ func DagTest(t *testing.T, cases []DagTestCase) {
 		}
 
 		// Run the test cases in a goroutine.
+		var wg sync.WaitGroup
 		for _, nextCase := range next {
+			wg.Add(1)
 			config := BashConfig{}
 			if nextCase.Config != nil {
 				config = *nextCase.Config
 			}
 			go t.Run(nextCase.Name, func(t *testing.T) {
+				defer wg.Done()
 				// Run the test case.
 				BashTestFile(t, nextCase.Path, config)
 			})
 		}
+
+		wg.Wait()
 
 		// Mark the case as done.
 		for _, nextCase := range next {
