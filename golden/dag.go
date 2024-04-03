@@ -78,6 +78,7 @@ func DagTest(t *testing.T, cases []DagTestCase) {
 
 			nextCase := nextCase
 			go func() {
+				// Run the test case.
 				BashTestFile(t, nextCase.Path, config)
 				wg.Done()
 			}()
