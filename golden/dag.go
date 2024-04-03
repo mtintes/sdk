@@ -37,6 +37,7 @@ type DagTestCase struct {
 //	}
 //	golden.DagTest(t, cases)
 func DagTest(t *testing.T, cases []DagTestCase) {
+	t.Parallel()
 	err := validate(cases)
 	if err != nil {
 		t.Fatal(err)
@@ -58,7 +59,6 @@ func DagTest(t *testing.T, cases []DagTestCase) {
 			}
 			if ready {
 				next = append(next, c)
-				break
 			}
 		}
 
@@ -70,16 +70,17 @@ func DagTest(t *testing.T, cases []DagTestCase) {
 		// Run the test cases in a goroutine.
 		var wg sync.WaitGroup
 		for _, nextCase := range next {
+			wg.Add(1)
 			config := BashConfig{}
 			if nextCase.Config != nil {
 				config = *nextCase.Config
 			}
-			wg.Add(1)
-			go t.Run(nextCase.Name, func(t *testing.T) {
-				defer wg.Done()
-				// Run the test case.
+
+			nextCase := nextCase
+			go func() {
 				BashTestFile(t, nextCase.Path, config)
-			})
+				wg.Done()
+			}()
 		}
 
 		wg.Wait()
