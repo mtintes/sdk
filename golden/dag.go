@@ -69,17 +69,16 @@ func DagTest(t *testing.T, cases []DagTestCase) {
 		// Run the test cases in a goroutine.
 		var wg sync.WaitGroup
 		for _, nextCase := range next {
+			wg.Add(1)
 			config := BashConfig{}
 			if nextCase.Config != nil {
 				config = *nextCase.Config
 			}
-			wg.Add(1)
-			t.Run(nextCase.Name, func(t *testing.T) {
-				go func() {
-					defer wg.Done()
-					// Run the test case.
-					BashTestFile(t, nextCase.Path, config)
-				}()
+			go t.Run(nextCase.Name, func(t *testing.T) {
+				t.Parallel()
+				defer wg.Done()
+				// Run the test case.
+				BashTestFile(t, nextCase.Path, config)
 			})
 		}
 
