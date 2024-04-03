@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
@@ -130,6 +131,12 @@ func BashTestFile(
 				dmp.DiffPrettyText(diffs),
 			)
 		}
+	}
+
+	// Delay the execution of the test to adhere for rate limits.
+	if bashConfig.WaitBefore > 0 {
+		t.Logf("delaying test execution for %v", bashConfig.WaitBefore)
+		<-time.After(bashConfig.WaitBefore)
 	}
 
 	// Test is executed.
