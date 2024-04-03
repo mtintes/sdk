@@ -58,7 +58,6 @@ func DagTest(t *testing.T, cases []DagTestCase) {
 			}
 			if ready {
 				next = append(next, c)
-				break
 			}
 		}
 
