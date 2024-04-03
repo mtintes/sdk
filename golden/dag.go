@@ -36,6 +36,7 @@ type DagTestCase struct {
 //	}
 //	golden.DagTest(t, cases)
 func DagTest(t *testing.T, cases []DagTestCase) {
+	t.Parallel()
 	err := validate(cases)
 	if err != nil {
 		t.Fatal(err)
@@ -66,7 +67,6 @@ func DagTest(t *testing.T, cases []DagTestCase) {
 		}
 
 		// Run the test cases in a goroutine.
-		t.Parallel()
 		for _, nextCase := range next {
 			config := BashConfig{}
 			if nextCase.Config != nil {
