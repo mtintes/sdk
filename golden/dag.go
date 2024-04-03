@@ -74,10 +74,12 @@ func DagTest(t *testing.T, cases []DagTestCase) {
 				config = *nextCase.Config
 			}
 			wg.Add(1)
-			go t.Run(nextCase.Name, func(t *testing.T) {
-				defer wg.Done()
-				// Run the test case.
-				BashTestFile(t, nextCase.Path, config)
+			t.Run(nextCase.Name, func(t *testing.T) {
+				go func() {
+					defer wg.Done()
+					// Run the test case.
+					BashTestFile(t, nextCase.Path, config)
+				}()
 			})
 		}
 
