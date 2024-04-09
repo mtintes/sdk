@@ -516,8 +516,6 @@ func ParallelRuns(runs int) TableOptions {
 	}
 }
 
-//
-
 // Creates the points parameters for an OSRM request.
 func pointsParameters(points []measure.Point) []string {
 	// Turn points slice into OSRM-friendly semicolon-delimited point pairs
