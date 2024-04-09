@@ -23,5 +23,5 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	go.mongodb.org/mongo-driver v1.11.2 // indirect
 	golang.org/x/sys v0.5.0 // indirect
-	google.golang.org/protobuf v1.28.1 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 )
