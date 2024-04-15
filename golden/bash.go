@@ -76,6 +76,10 @@ func BashTestFile(
 			t.Fatal("error getting absolute path for script: ", script, ": ", err)
 		}
 
+		if _, err := os.Stat(script); err != nil {
+			t.Fatalf("script %s does not exist", script)
+		}
+
 		// Execute a bash command which consists of executing a .sh file.
 		cmd := exec.Command("bash", script)
 
