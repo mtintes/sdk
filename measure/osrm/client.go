@@ -362,12 +362,14 @@ func (c *client) tableRequests( //nolint:gocyclo
 				return nil, err
 			}
 
+			// Determine the information to return. If neither distance nor
+			// duration is requested, we return both.
+			isDefault := !config.withDistance && !config.withDuration
 			annotations := []string{}
-			if config.withDuration {
+			if isDefault || config.withDuration {
 				annotations = append(annotations, "duration")
 			}
-
-			if config.withDistance {
+			if isDefault || config.withDistance {
 				annotations = append(annotations, "distance")
 			}
 
