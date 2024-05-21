@@ -387,6 +387,11 @@ func (c *client) tableRequests( //nolint:gocyclo
 				path += strings.Join(approaches, ";")
 			}
 
+			if len(config.withExclude) > 0 {
+				path += "&exclude="
+				path += strings.Join(config.withExclude, ",")
+			}
+
 			// Set scale factor. This only has an effect on durations.
 			if c.scaleFactor != 1.0 {
 				path += fmt.Sprintf("&scale_factor=%f", c.scaleFactor)
@@ -453,6 +458,7 @@ type tableConfig struct {
 	withDuration     bool
 	parallelRuns     int
 	withApproachCurb bool
+	withExclude      []string
 }
 
 // WithDuration returns a TableOptions function for composing a tableConfig with
@@ -478,6 +484,14 @@ func WithDistance() TableOptions {
 func WithApproachCurb() TableOptions {
 	return func(c *tableConfig) {
 		c.withApproachCurb = true
+	}
+}
+
+// WithExclude returns a TableOptions func for a tableConfig with the exclude
+// parameter set.
+func WithExclude(exclude []string) TableOptions {
+	return func(c *tableConfig) {
+		c.withExclude = exclude
 	}
 }
 
