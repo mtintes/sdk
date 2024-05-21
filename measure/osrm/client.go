@@ -362,12 +362,14 @@ func (c *client) tableRequests( //nolint:gocyclo
 				return nil, err
 			}
 
+			// Determine the information to return. If neither distance nor
+			// duration is requested, we return both.
+			isDefault := !config.withDistance && !config.withDuration
 			annotations := []string{}
-			if config.withDuration {
+			if isDefault || config.withDuration {
 				annotations = append(annotations, "duration")
 			}
-
-			if config.withDistance {
+			if isDefault || config.withDistance {
 				annotations = append(annotations, "distance")
 			}
 
@@ -385,6 +387,11 @@ func (c *client) tableRequests( //nolint:gocyclo
 					approaches[i] = "curb"
 				}
 				path += strings.Join(approaches, ";")
+			}
+
+			if len(config.withExclude) > 0 {
+				path += "&exclude="
+				path += strings.Join(config.withExclude, ",")
 			}
 
 			// Set scale factor. This only has an effect on durations.
@@ -453,6 +460,7 @@ type tableConfig struct {
 	withDuration     bool
 	parallelRuns     int
 	withApproachCurb bool
+	withExclude      []string
 }
 
 // WithDuration returns a TableOptions function for composing a tableConfig with
@@ -478,6 +486,14 @@ func WithDistance() TableOptions {
 func WithApproachCurb() TableOptions {
 	return func(c *tableConfig) {
 		c.withApproachCurb = true
+	}
+}
+
+// WithExclude returns a TableOptions func for a tableConfig with the exclude
+// parameter set.
+func WithExclude(exclude []string) TableOptions {
+	return func(c *tableConfig) {
+		c.withExclude = exclude
 	}
 }
 
