@@ -2,6 +2,7 @@ package golden
 
 import (
 	"fmt"
+	"math"
 	"reflect"
 	"strconv"
 	"strings"
@@ -65,6 +66,47 @@ func replaceTransient(
 	}
 
 	return replaced
+}
+
+// roundFields rounds all the values in a map whose key is contained in the
+// variadic list of roundingConfigs. The rounded value has a stable value
+// according to the data type.
+func roundFields(
+	original map[string]any,
+	roundedFields ...RoundingConfig,
+) (map[string]any, error) {
+	roundingLookup := map[string]int{}
+	for _, field := range roundedFields {
+		roundingLookup[field.Key] = field.Precision
+	}
+
+	replaced := map[string]any{}
+	for key, value := range original {
+		replaced[key] = value
+		replacement, isRounded := roundingLookup[key]
+		if !isRounded {
+			continue
+		}
+
+		if replacement < 0 {
+			continue
+		}
+
+		if _, isFloat := value.(float64); isFloat {
+			replaced[key] = round(value.(float64), replacement)
+			continue
+		} else {
+			return nil, fmt.Errorf("field %s is not a float", key)
+		}
+	}
+
+	return replaced, nil
+}
+
+// round rounds a float64 value to a given precision.
+func round(value float64, precision int) float64 {
+	shift := math.Pow(10, float64(precision))
+	return math.Round(value*shift) / shift
 }
 
 /*

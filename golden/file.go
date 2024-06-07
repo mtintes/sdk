@@ -153,6 +153,8 @@ func comparison(
 	inputPath string,
 	config Config,
 ) {
+	var err error
+
 	goldenPath := inputPath + goldenExtension
 	if config.OutputProcessConfig.RelativeDestination != "" {
 		goldenPath = filepath.Join(
@@ -171,6 +173,10 @@ func comparison(
 
 		flattenedOutput = flatten(output)
 		flattenedOutput = replaceTransient(flattenedOutput, config.TransientFields...)
+		flattenedOutput, err = roundFields(flattenedOutput, config.OutputProcessConfig.RoundingConfig...)
+		if err != nil {
+			t.Fatal(err)
+		}
 		nestedOutput, err := nest(flattenedOutput)
 		if err != nil {
 			t.Fatal(err)
