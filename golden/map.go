@@ -95,9 +95,9 @@ func roundFields(
 		if _, isFloat := value.(float64); isFloat {
 			replaced[key] = round(value.(float64), replacement)
 			continue
-		} else {
-			return nil, fmt.Errorf("field %s is not a float", key)
 		}
+
+		return nil, fmt.Errorf("field %s is not a float", key)
 	}
 
 	return replaced, nil
