@@ -1,6 +1,7 @@
 package golden
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -460,6 +461,37 @@ func Test_nest(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got, _ := nest(tt.args.flattened); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("nest() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_round(t *testing.T) {
+	tests := []struct {
+		num       float64
+		want      float64
+		precision int
+	}{
+		{
+			num:       1.23456789,
+			want:      1.235,
+			precision: 3,
+		},
+		{
+			num:       1.234567891234567891234,
+			want:      1.23456789123456789123,
+			precision: 20,
+		},
+		{
+			num:       1.234567891234567891234,
+			want:      1,
+			precision: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("round %d", tt.precision), func(t *testing.T) {
+			if got := round(tt.num, tt.precision); got != tt.want {
+				t.Errorf("round() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -162,6 +162,9 @@ type OutputProcessConfig struct {
 	// VolatileRegexReplacements defines regex replacements to be applied to the
 	// golden file before comparison.
 	VolatileRegexReplacements []VolatileRegexReplacement
+	// RoundingConfig defines how to round fields in the output before
+	// comparison.
+	RoundingConfig []RoundingConfig
 	// VolatileDataFiles are files that contain volatile data and should get
 	// post-processed to be more stable. This is only supported in directory
 	// mode ([BashTest]) of golden bash testing, i.e., this will be ignored in
@@ -171,6 +174,14 @@ type OutputProcessConfig struct {
 	// output file will be stored. If not provided, then the output file is
 	// stored in the current directory.
 	RelativeDestination string
+}
+
+// RoundingConfig defines how to round a field in the output before comparison.
+type RoundingConfig struct {
+	// Key is the JSONPath-like key to the field that should be rounded.
+	Key string
+	// Precision is the number of decimal places to round to.
+	Precision int
 }
 
 // ExecutionConfig defines the configuration for non-SDK golden file tests.
