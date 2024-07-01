@@ -10,7 +10,7 @@ require (
 
 require (
 	github.com/google/uuid v1.3.0
-	github.com/gorilla/schema v1.2.0
+	github.com/gorilla/schema v1.4.1
 	github.com/itzg/go-flagsfiller v1.9.1
 )
 
