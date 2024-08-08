@@ -12,6 +12,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/nextmv-io/sdk/flatmap"
 	"github.com/xeipuuv/gojsonschema"
 )
 
@@ -171,13 +172,13 @@ func comparison(
 			t.Fatal(err)
 		}
 
-		flattenedOutput = flatten(output)
+		flattenedOutput = flatmap.Do(output)
 		flattenedOutput = replaceTransient(flattenedOutput, config.TransientFields...)
 		flattenedOutput, err = roundFields(flattenedOutput, config.OutputProcessConfig.RoundingConfig...)
 		if err != nil {
 			t.Fatal(err)
 		}
-		nestedOutput, err := nest(flattenedOutput)
+		nestedOutput, err := flatmap.Undo(flattenedOutput)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -222,7 +223,7 @@ func comparison(
 		t.Fatal(err)
 	}
 
-	flattenedExpected := flatten(expected)
+	flattenedExpected := flatmap.Do(expected)
 
 	if len(config.DedicatedComparison) > 0 {
 		for _, key := range config.DedicatedComparison {
