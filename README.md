@@ -7,6 +7,7 @@ problems. Please find the following packages:
       output.
 - [measure][measure]: measures for various distances between locations.
 - [golden][golden]: tools for running tests with golden files.
+- [flatmap][flatmap]: functionality for flattening and unflattening maps.
 
 Please visit the official [Nextmv docs][docs] for comprehensive information.
 
@@ -22,3 +23,4 @@ behaviors when we have a good reason to.
 [measure]: ./measure
 [golden]: ./golden
 [docs]: https://docs.nextmv.io
+[flatmap]: ./flatmap
