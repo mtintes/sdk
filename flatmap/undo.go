@@ -8,10 +8,10 @@ import (
 
 /*
 Undo takes a flattened map and nests it into a multi-level map. The flattened
-map roughly follows the [JSONPath] standard. Please see the example to
-understand how the nested output looks like.
+map should follow the [JSONPath] standard. Please see the example to understand
+how the nested output looks like.
 
-[JSONPath]: https://goessner.net/articles/JsonPath/
+[JSONPath]: https://datatracker.ietf.org/doc/html/rfc9535
 */
 func Undo(flattened map[string]any) (map[string]any, error) {
 	// First, convert the flat map to a nested map. Then reshape the map into a
@@ -119,6 +119,7 @@ func (p pathKey) Key() string {
 type path []pathKey
 
 func pathFrom(key string) (path, error) {
+	key = strings.TrimPrefix(key, "$")
 	split := strings.Split(key[1:], ".")
 	p := make(path, 0, len(split))
 	for _, s := range split {

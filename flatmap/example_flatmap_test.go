@@ -43,25 +43,25 @@ func ExampleDo() {
 
 	// Output:
 	// {
-	//   ".a": "foo",
-	//   ".b[0].c": "bar",
-	//   ".b[0].d[0].e": 2,
-	//   ".b[0].d[1]": true,
-	//   ".b[1].c": "baz",
-	//   ".b[1].d[0].e": 3,
-	//   ".b[1].d[1]": false
+	//   "$.a": "foo",
+	//   "$.b[0].c": "bar",
+	//   "$.b[0].d[0].e": 2,
+	//   "$.b[0].d[1]": true,
+	//   "$.b[1].c": "baz",
+	//   "$.b[1].d[0].e": 3,
+	//   "$.b[1].d[1]": false
 	// }
 }
 
 func ExampleUndo() {
 	flattened := map[string]any{
-		".a":           "foo",
-		".b[0].c":      "bar",
-		".b[0].d[0].e": 2,
-		".b[0].d[1]":   true,
-		".b[1].c":      "baz",
-		".b[1].d[0].e": 3,
-		".b[1].d[1]":   false,
+		"$.a":           "foo",
+		"$.b[0].c":      "bar",
+		"$.b[0].d[0].e": 2,
+		"$.b[0].d[1]":   true,
+		"$.b[1].c":      "baz",
+		"$.b[1].d[0].e": 3,
+		"$.b[1].d[1]":   false,
 	}
 
 	nested, err := flatmap.Undo(flattened)
