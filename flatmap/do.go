@@ -3,19 +3,21 @@ package flatmap
 import (
 	"fmt"
 	"reflect"
+	"strings"
 )
 
 /*
 Do takes a nested map and flattens it into a single level map. The flattening
-roughly follows the [JSONPath] standard. Please see the example to understand
-how the flattened output looks like.
+follows the [JSONPath] standard. Please see the example to understand how the
+flattened output looks like.
 
-[JSONPath]: https://goessner.net/articles/JsonPath/
+[JSONPath]: https://datatracker.ietf.org/doc/html/rfc9535
 */
 func Do(nested map[string]any) map[string]any {
 	flattened := map[string]any{}
 	for childKey, childValue := range nested {
-		setChildren(flattened, childKey, childValue)
+		rootKey := fmt.Sprintf("$.%s", childKey)
+		setChildren(flattened, rootKey, childValue)
 	}
 
 	return flattened
@@ -28,6 +30,14 @@ func Do(nested map[string]any) map[string]any {
 // non-map-non-slice value is hit.
 func setChildren(flattened map[string]any, parentKey string, parentValue any) {
 	newKey := fmt.Sprintf(".%s", parentKey)
+	split := strings.Split(parentKey, "")
+	if len(split) > 1 {
+		firstTwo := strings.Join(split[0:2], "")
+		if firstTwo == "$." {
+			newKey = parentKey
+		}
+	}
+
 	if reflect.TypeOf(parentValue) == nil {
 		flattened[newKey] = parentValue
 		return
