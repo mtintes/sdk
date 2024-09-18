@@ -111,3 +111,8 @@ jobs:
           --generate-notes \
           --title $VERSION $PRERELEASE_FLAG
         working-directory: ./sdk
+
+      - name: notify slack
+        run: |
+          export DATA="{\"text\":\"Release notification - sdk $VERSION (see <https://github.com/nextmv-io/sdk/releases/$VERSION|release notes>)\"}"
+          curl -X POST -H 'Content-type: application/json' --data "$DATA" ${{ secrets.SLACK_WEBHOOK_URL }}
