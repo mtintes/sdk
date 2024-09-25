@@ -1,3 +1,7 @@
+# Warning:
+Feel free to use this, but I am only extending flatmap with any accuracy (and technically less accuracy at that). I HIGHLY recommend using the [original](https://github.com/nextmv-io/sdk) project. Their reasoning and code is better than my hack. I just needed a little different pattern for my weird use case and am therefore leaving the standard. I don't guarantee I will be updating this in the future.
+
+
 # Nextmv's Software Development Kit
 
 Nextmv's SDK is a collection of Go APIs for solving decision automation

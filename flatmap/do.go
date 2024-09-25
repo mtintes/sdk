@@ -13,13 +13,16 @@ flattened output looks like.
 
 [JSONPath]: https://datatracker.ietf.org/doc/html/rfc9535
 */
-func Do(nested map[string]any) map[string]any {
+func Do(nested map[string]any, options Options) map[string]any {
 	flattened := map[string]any{}
 	for childKey, childValue := range nested {
 		rootKey := fmt.Sprintf("$.%s", childKey)
 		setChildren(flattened, rootKey, childValue)
 	}
 
+	if !options.JSONPath {
+		return prefixRemover(flattened)
+	}
 	return flattened
 }
 
@@ -67,4 +70,17 @@ func setChildren(flattened map[string]any, parentKey string, parentValue any) {
 	}
 
 	flattened[newKey] = parentValue
+}
+
+func prefixRemover(flattened map[string]any) map[string]any {
+	removed := map[string]any{}
+	for key, value := range flattened {
+		newKey := strings.TrimPrefix(key, "$.")
+		removed[newKey] = value
+	}
+	return removed
+}
+
+type Options struct {
+	JSONPath bool
 }
