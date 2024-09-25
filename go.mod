@@ -1,4 +1,4 @@
-module github.com/nextmv-io/sdk
+module github.com/mtintes/sdk
 
 go 1.21
 
