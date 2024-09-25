@@ -178,7 +178,7 @@ func Test_Do(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := flatmap.Do(tt.args.nested); !reflect.DeepEqual(got, tt.want) {
+			if got := flatmap.Do(tt.args.nested, flatmap.Options{JSONPath: true}); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("flatten() = %v, want %v", got, tt.want)
 			}
 		})

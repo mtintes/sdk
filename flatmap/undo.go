@@ -13,13 +13,13 @@ how the nested output looks like.
 
 [JSONPath]: https://datatracker.ietf.org/doc/html/rfc9535
 */
-func Undo(flattened map[string]any) (map[string]any, error) {
+func Undo(flattened map[string]any, options Options) (map[string]any, error) {
 	// First, convert the flat map to a nested map. Then reshape the map into a
 	// slice where appropriate.
 	const magicSliceKey = "isSlice"
 	nested := make(map[string]any)
 	for key, value := range flattened {
-		p, err := pathFrom(key)
+		p, err := pathFrom(key, options)
 		if err != nil {
 			return nil, err
 		}
@@ -118,9 +118,14 @@ func (p pathKey) Key() string {
 
 type path []pathKey
 
-func pathFrom(key string) (path, error) {
-	key = strings.TrimPrefix(key, "$")
-	split := strings.Split(key[1:], ".")
+func pathFrom(key string, options Options) (path, error) {
+	var split []string
+	if options.JSONPath {
+		key = strings.TrimPrefix(key, "$")
+		split = strings.Split(key[1:], ".")
+	} else {
+		split = strings.Split(key, ".")
+	}
 	p := make(path, 0, len(split))
 	for _, s := range split {
 		stops, err := pathKeysFrom(s)

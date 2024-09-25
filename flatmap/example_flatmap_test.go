@@ -32,7 +32,7 @@ func ExampleDo() {
 		},
 	}
 
-	flattened := flatmap.Do(nested)
+	flattened := flatmap.Do(nested, flatmap.Options{JSONPath: true})
 
 	b, err := json.MarshalIndent(flattened, "", "  ")
 	if err != nil {
@@ -64,7 +64,7 @@ func ExampleUndo() {
 		"$.b[1].d[1]":   false,
 	}
 
-	nested, err := flatmap.Undo(flattened)
+	nested, err := flatmap.Undo(flattened, flatmap.Options{JSONPath: true})
 	if err != nil {
 		panic(err)
 	}

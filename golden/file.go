@@ -172,13 +172,13 @@ func comparison(
 			t.Fatal(err)
 		}
 
-		flattenedOutput = flatmap.Do(output)
+		flattenedOutput = flatmap.Do(output, flatmap.Options{JSONPath: true})
 		flattenedOutput = replaceTransient(flattenedOutput, config.TransientFields...)
 		flattenedOutput, err = roundFields(flattenedOutput, config.OutputProcessConfig.RoundingConfig...)
 		if err != nil {
 			t.Fatal(err)
 		}
-		nestedOutput, err := flatmap.Undo(flattenedOutput)
+		nestedOutput, err := flatmap.Undo(flattenedOutput, flatmap.Options{JSONPath: true})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -223,7 +223,7 @@ func comparison(
 		t.Fatal(err)
 	}
 
-	flattenedExpected := flatmap.Do(expected)
+	flattenedExpected := flatmap.Do(expected, flatmap.Options{JSONPath: true})
 
 	if len(config.DedicatedComparison) > 0 {
 		for _, key := range config.DedicatedComparison {

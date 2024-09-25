@@ -178,7 +178,7 @@ func Test_Undo(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := flatmap.Undo(tt.args.flattened); !reflect.DeepEqual(got, tt.want) {
+			if got, _ := flatmap.Undo(tt.args.flattened, flatmap.Options{JSONPath: true}); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("nest() = %v, want %v", got, tt.want)
 			}
 		})
